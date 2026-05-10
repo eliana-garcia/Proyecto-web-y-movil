@@ -1,7 +1,0 @@
-{
-  "name": "ProyectoCiberseguridad",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react-vite"
-}
