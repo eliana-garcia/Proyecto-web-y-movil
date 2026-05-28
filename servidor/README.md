@@ -57,22 +57,3 @@ Servidor funcionando
 
 ---
 
-# Archivos importantes
-
-```text
-servidor/
-│
-├── server.js
-├── package.json
-├── .gitignore
-└── README.md
-```
-
----
-
-# Funcionalidad actual
-
-* Creación del servidor Express
-* Ruta principal `/`
-* Respuesta HTTP básica
-
