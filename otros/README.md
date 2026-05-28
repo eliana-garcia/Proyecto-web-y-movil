@@ -11,4 +11,8 @@ Este documento es el eje central de la entrega teórica e incluye:
 *   **EP 1.2 - Justificación y Usuarios:** Análisis del problema de las brechas de ciberseguridad municipal en Chile y definición del perfil de los usuarios objetivo (Ciudadano, Funcionario, Administrador).
 *   **EP 1.4 - Arquitectura de Navegación:** Definición de la estructura de navegación del sistema, incluyendo rutas principales y secundarias, relaciones jerárquicas, flujo de interacción de los distintos usuarios (Ciudadano, Funcionario y Administrador), diferenciación por roles, navegación entre funcionalidades, coherencia entre dispositivos y justificación técnica de la arquitectura propuesta.
 
-### sd
+### Entrega Parcial 2.pdf
+
+### database.sql 
+
+
