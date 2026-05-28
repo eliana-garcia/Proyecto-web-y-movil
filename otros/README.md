@@ -13,6 +13,10 @@ Este documento es el eje central de la entrega teórica e incluye:
 
 ### Entrega Parcial 2.pdf
 
+* **EP 2.2 - Configuración y Modelado de Base de Datos Relacional:** Implementación de una base de datos relacional utilizando PostgreSQL. Donde incluye: diseño del modelo relacional, creación de tablas, relaciones entre entidades, validación de integridad, uso de llaves primarias y foráneas, consultas SQL yevidencias desde pgAdmin 4.
+
 ### database.sql 
+
+*  **Archivo SQL que contiene:** creación de tablas, relaciones entre entidades, restricciones de integridad, inserción de datos de prueba y consultas SQL utilizadas durante el desarrollo del proyecto.
 
 
