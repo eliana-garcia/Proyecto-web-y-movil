@@ -19,6 +19,8 @@ app.use(express.json());
 const verificarToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
+  console.log("AUTH HEADER:", authHeader);
+
   if (!authHeader) {
     return res.status(401).json({
       mensaje: "Token requerido"
@@ -27,6 +29,9 @@ const verificarToken = (req, res, next) => {
 
   const token = authHeader.split(" ")[1];
 
+  console.log("TOKEN:", token);
+  console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
   if (!token) {
     return res.status(401).json({
       mensaje: "Token requerido"
@@ -34,20 +39,39 @@ const verificarToken = (req, res, next) => {
   }
 
   try {
+
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
     );
+
+    console.log("TOKEN DECODIFICADO:", decoded);
 
     req.usuario = decoded;
 
     next();
 
   } catch (error) {
+
+    console.log("ERROR JWT:", error.message);
+
     return res.status(403).json({
       mensaje: "Token inválido"
     });
   }
+};
+
+const verificarAdmin = (req, res, next) => {
+
+  if (req.usuario.rol !== 1) {
+
+    return res.status(403).json({
+      mensaje: "Acceso solo para administradores"
+    });
+
+  }
+
+  next();
 };
 
 /* =========================
@@ -223,6 +247,7 @@ app.post("/api/login", async (req, res) => {
 app.get(
   "/api/usuarios",
   verificarToken,
+  verificarAdmin,
   async (req, res) => {
     try {
 
@@ -247,6 +272,114 @@ app.get(
 
       res.status(500).json({
         mensaje: "Error al obtener usuarios"
+      });
+    }
+  }
+);
+
+
+/* =========================
+   ACTUALIZAR USUARIO
+========================= */
+
+app.put(
+  "/api/usuarios/:id",
+  verificarToken,
+  verificarAdmin,
+  async (req, res) => {
+
+    try {
+
+      const { id } = req.params;
+
+      const {
+        nombre_usuario,
+        correo,
+        region,
+        comuna
+      } = req.body;
+
+      const resultado = await pool.query(
+        `UPDATE usuarios
+         SET
+           nombre_usuario = $1,
+           correo = $2,
+           region = $3,
+           comuna = $4
+         WHERE id = $5
+         RETURNING
+           id,
+           nombre_usuario,
+           correo,
+           region,
+           comuna,
+           rol_id`,
+        [
+          nombre_usuario,
+          correo,
+          region,
+          comuna,
+          id
+        ]
+      );
+
+      if (resultado.rows.length === 0) {
+        return res.status(404).json({
+          mensaje: "Usuario no encontrado"
+        });
+      }
+
+      res.json(resultado.rows[0]);
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al actualizar usuario"
+      });
+    }
+  }
+); 
+
+
+
+/* =========================
+   ELIMINAR USUARIO
+========================= */
+
+app.delete(
+  "/api/usuarios/:id",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const { id } = req.params;
+
+      const resultado = await pool.query(
+        `DELETE FROM usuarios
+         WHERE id = $1
+         RETURNING id`,
+        [id]
+      );
+
+      if (resultado.rows.length === 0) {
+        return res.status(404).json({
+          mensaje: "Usuario no encontrado"
+        });
+      }
+
+      res.json({
+        mensaje: "Usuario eliminado correctamente"
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al eliminar usuario"
       });
     }
   }
@@ -281,6 +414,7 @@ const PORT = process.env.PORT || 3000;
 app.post(
   "/api/reportes",
   verificarToken,
+  verificarAdmin,
   async (req, res) => {
 
     try {
@@ -316,6 +450,51 @@ app.post(
 
       res.status(500).json({
         mensaje: 'Error al crear reporte'
+      });
+    }
+  }
+);
+
+/* =========================
+   ACTUALIZAR ESTADO REPORTE
+========================= */
+
+app.put(
+  "/api/reportes/:id",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const { id } = req.params;
+
+      const { estado } = req.body;
+
+      const resultado = await pool.query(
+        `UPDATE reportes
+         SET estado = $1
+         WHERE id = $2
+         RETURNING *`,
+        [
+          estado,
+          id
+        ]
+      );
+
+      if (resultado.rows.length === 0) {
+        return res.status(404).json({
+          mensaje: "Reporte no encontrado"
+        });
+      }
+
+      res.json(resultado.rows[0]);
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al actualizar reporte"
       });
     }
   }
