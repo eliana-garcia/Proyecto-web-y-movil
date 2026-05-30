@@ -3,6 +3,8 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 
+import RoutePrivate from './components/RoutePrivate';
+
 import Login from './pages/Login';
 import LoginClaveUnica from './pages/LoginClaveUnica';
 import Registro from './pages/Registro';
@@ -31,24 +33,29 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
+
+          {/* PUBLICAS */}
           <Route exact path="/Login" component={Login} />
           <Route exact path="/LoginClaveUnica" component={LoginClaveUnica} />
           <Route exact path="/Registro" component={Registro} />
 
-          <Route exact path="/DashBoardAdmin" component={DashBoardAdmin} />
-          <Route exact path="/Capacitacion" component={Capacitacion} />
-          <Route exact path="/Evaluacion" component={Evaluacion} />
-          <Route exact path="/ValidadorDominios" component={ValidadorDominios} />
-          <Route exact path="/ReportarIncidente" component={ReportarIncidente} />
-          <Route exact path="/HistorialReportes" component={HistorialReportes} />
-          <Route exact path="/ValidadorDocumentos" component={ValidadorDocumentos} />
-          <Route exact path="/Estadisticas" component={Estadisticas} />
-          <Route exact path="/Agenda" component={Agenda} />
-          <Route exact path="/GestionUsuarios" component={GestionUsuarios} />
+          {/* PRIVADAS (PROTEGIDAS) */}
+          <RoutePrivate exact path="/DashBoardAdmin" component={DashBoardAdmin} />
+          <RoutePrivate exact path="/Capacitacion" component={Capacitacion} />
+          <RoutePrivate exact path="/Evaluacion" component={Evaluacion} />
+          <RoutePrivate exact path="/ValidadorDominios" component={ValidadorDominios} />
+          <RoutePrivate exact path="/ReportarIncidente" component={ReportarIncidente} />
+          <RoutePrivate exact path="/HistorialReportes" component={HistorialReportes} />
+          <RoutePrivate exact path="/ValidadorDocumentos" component={ValidadorDocumentos} />
+          <RoutePrivate exact path="/Estadisticas" component={Estadisticas} />
+          <RoutePrivate exact path="/Agenda" component={Agenda} />
+          <RoutePrivate exact path="/GestionUsuarios" component={GestionUsuarios} />
 
+          {/* DEFAULT */}
           <Route exact path="/">
             <Redirect to="/Login" />
           </Route>
+
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

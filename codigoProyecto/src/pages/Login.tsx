@@ -23,15 +23,43 @@ const Login: React.FC = () => {
   const [rut, setRut] = useState('');
   const [password, setPassword] = useState('');
 
- const iniciarSesion = () => {
+ const iniciarSesion = async () => {
   if (!rut || !password) {
     alert('Debes ingresar RUT y contraseña.');
     return;
   }
 
-  localStorage.setItem('token', 'usuario_autenticado');
+  try {
+    const response = await fetch(
+      'http://localhost:3000/api/login',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          rut,
+          password
+        })
+      }
+    );
 
-  router.push('/DashBoardAdmin', 'root', 'replace');
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.mensaje);
+      return;
+    }
+
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('rol', String(data.rol));
+
+    router.push('/DashBoardAdmin', 'root', 'replace');
+
+  } catch (error) {
+    console.error(error);
+    alert('Error al conectar con el servidor');
+  }
 };
 
   return (
