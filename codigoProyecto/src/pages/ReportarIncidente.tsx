@@ -10,18 +10,63 @@ const ReportarIncidente: React.FC = () => {
   const [fecha, setFecha] = useState('');
   const [descripcion, setDescripcion] = useState('');
 
-  const enviarReporte = () => {
-    if (!titulo || !categoria || !fecha || !descripcion) {
-      alert('Debes completar los campos obligatorios.');
+  const enviarReporte = async () => {
+
+  if (!titulo || !categoria || !fecha || !descripcion) {
+    alert('Debes completar los campos obligatorios.');
+    return;
+  }
+
+  try {
+
+    const token = localStorage.getItem('token');
+
+    const descripcionCompleta = `
+Título: ${titulo}
+
+Categoría: ${categoria}
+
+Fecha: ${fecha}
+
+Descripción:
+${descripcion}
+`;
+
+    const response = await fetch(
+      'http://localhost:3000/api/reportes',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          descripcion: descripcionCompleta
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.mensaje);
       return;
     }
 
     alert('Incidente reportado correctamente.');
+
     setTitulo('');
     setCategoria('');
     setFecha('');
     setDescripcion('');
-  };
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert('Error al conectar con el servidor');
+  }
+};
 
   return (
     <IonPage>

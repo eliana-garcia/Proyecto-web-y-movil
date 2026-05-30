@@ -45,16 +45,21 @@ const Login: React.FC = () => {
     );
 
     const data = await response.json();
-
+    console.log("RESPUESTA LOGIN:", data);
     if (!response.ok) {
       alert(data.mensaje);
       return;
     }
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('rol', String(data.rol));
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('rol', String(data.rol));
+      localStorage.setItem('usuarioId', String(data.id));
 
-    router.push('/DashBoardAdmin', 'root', 'replace');
+      if (data.rol === 1) {
+        router.push('/DashBoardAdmin', 'root', 'replace');
+      } else {
+        router.push('/Capacitacion', 'root', 'replace');
+      }
 
   } catch (error) {
     console.error(error);

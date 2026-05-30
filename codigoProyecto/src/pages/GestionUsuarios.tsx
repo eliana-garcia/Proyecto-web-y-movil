@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   IonPage,
@@ -18,42 +18,28 @@ import {
 
 import AdminLayout from '../components/AdminLayout';
 
-const usuarios = [
-  {
-    rut: '12.345.678-9',
-    nombre: 'Juan Pérez',
-    email: 'juan.perez@municipalidad.cl',
-    departamento: 'Obras',
-    estado: 'Activo',
-    rol: 'Usuario'
-  },
-  {
-    rut: '23.456.789-0',
-    nombre: 'María González',
-    email: 'maria.gonzalez@municipalidad.cl',
-    departamento: 'Finanzas',
-    estado: 'Activo',
-    rol: 'Usuario'
-  },
-  {
-    rut: '34.567.890-1',
-    nombre: 'Carlos Rodríguez',
-    email: 'carlos.rodriguez@municipalidad.cl',
-    departamento: 'RRHH',
-    estado: 'Activo',
-    rol: 'Usuario'
-  },
-  {
-    rut: '45.678.901-2',
-    nombre: 'Ana Torres',
-    email: 'ana.torres@municipalidad.cl',
-    departamento: 'TI',
-    estado: 'Bloqueado',
-    rol: 'Admin'
-  }
-];
-
 const GestionUsuarios: React.FC = () => {
+
+  const [usuarios, setUsuarios] = useState<any[]>([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    fetch('http://localhost:3000/api/usuarios', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setUsuarios(data);
+      })
+      .catch(error => {
+        console.error('Error al cargar usuarios:', error);
+      });
+
+  }, []);
+
   return (
     <IonPage>
       <AdminLayout active="Gestión de Usuarios">
@@ -90,38 +76,47 @@ const GestionUsuarios: React.FC = () => {
           </div>
 
           <div className="users-metrics">
+
             <div>
               <p>Total Usuarios</p>
-              <h2>6</h2>
+              <h2>{usuarios.length}</h2>
             </div>
 
             <div>
               <p>Activos</p>
-              <h2 className="green-text">4</h2>
+              <h2 className="green-text">{usuarios.length}</h2>
             </div>
 
             <div>
               <p>Bloqueados</p>
-              <h2 className="red-text">1</h2>
+              <h2 className="red-text">0</h2>
             </div>
 
             <div>
               <p>Administradores</p>
-              <h2 className="blue-text">1</h2>
+              <h2 className="blue-text">
+                {usuarios.filter(u => u.rol_id === 1).length}
+              </h2>
             </div>
+
           </div>
 
           <div className="table-card">
-            <h2>Lista de Usuarios (6)</h2>
+
+            <h2>
+              Lista de Usuarios ({usuarios.length})
+            </h2>
 
             <div className="responsive-table">
+
               <table>
+
                 <thead>
                   <tr>
                     <th>RUT</th>
                     <th>Nombre</th>
                     <th>Email</th>
-                    <th>Departamento</th>
+                    <th>Comuna</th>
                     <th>Estado</th>
                     <th>Rol</th>
                     <th>Acción</th>
@@ -129,26 +124,46 @@ const GestionUsuarios: React.FC = () => {
                 </thead>
 
                 <tbody>
+
                   {usuarios.map((u) => (
-                    <tr key={u.rut}>
+
+                    <tr key={u.id}>
                       <td>{u.rut}</td>
-                      <td>{u.nombre}</td>
-                      <td>{u.email}</td>
-                      <td>{u.departamento}</td>
+
+                      <td>{u.nombre_usuario}</td>
+
+                      <td>{u.correo}</td>
+
+                      <td>{u.comuna}</td>
+
                       <td>
-                        <span className={u.estado === 'Activo' ? 'status active' : 'status blocked'}>
-                          {u.estado}
+                        <span className="status active">
+                          Activo
                         </span>
                       </td>
-                      <td>{u.rol}</td>
+
                       <td>
-                        <IonIcon className="edit-icon" icon={createOutline} />
+                        {u.rol_id === 1
+                          ? 'Administrador'
+                          : 'Usuario'}
+                      </td>
+
+                      <td>
+                        <IonIcon
+                          className="edit-icon"
+                          icon={createOutline}
+                        />
                       </td>
                     </tr>
+
                   ))}
+
                 </tbody>
+
               </table>
+
             </div>
+
           </div>
 
         </div>

@@ -40,7 +40,7 @@ const Registro: React.FC = () => {
     });
   };
 
-  const registrarUsuario = () => {
+  const registrarUsuario = async () => {
     if (
       !form.usuario ||
       !form.rut ||
@@ -64,9 +64,39 @@ const Registro: React.FC = () => {
       return;
     }
 
-    localStorage.setItem('usuario_registrado', JSON.stringify(form));
-    alert('Usuario registrado correctamente.');
-    router.push('/Login', 'back');
+    try {
+      const response = await fetch(
+        'http://localhost:3000/api/registro',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nombre_usuario: form.usuario,
+            rut: form.rut,
+            correo: form.correo,
+            region: form.region,
+            comuna: form.comuna,
+            password: form.password
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.mensaje || 'Error al registrar usuario');
+        return;
+      }
+
+      alert('Usuario registrado correctamente.');
+      router.push('/Login', 'back');
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert('No fue posible conectar con el servidor.');
+    }
   };
 
   return (
@@ -75,7 +105,10 @@ const Registro: React.FC = () => {
         <div className="registro-wrapper">
           <div className="registro-card">
 
-            <button className="registro-back" onClick={() => router.push('/Login', 'back')}>
+            <button
+              className="registro-back"
+              onClick={() => router.push('/Login', 'back')}
+            >
               <IonIcon icon={arrowBackOutline} />
               Volver
             </button>
@@ -85,34 +118,48 @@ const Registro: React.FC = () => {
             </div>
 
             <h1>Registro de Usuario</h1>
-            <p className="registro-subtitle">Complete el formulario para acceder</p>
+            <p className="registro-subtitle">
+              Complete el formulario para acceder
+            </p>
 
             <div className="registro-grid">
 
               <div className="registro-group">
-                <label>Nombre de Usuario <span>*</span></label>
+                <label>
+                  Nombre de Usuario <span>*</span>
+                </label>
                 <IonInput
                   value={form.usuario}
-                  onIonInput={(e) => cambiarValor('usuario', String(e.detail.value))}
+                  onIonInput={(e) =>
+                    cambiarValor('usuario', String(e.detail.value))
+                  }
                   className="registro-input"
                 />
               </div>
 
               <div className="registro-group">
-                <label>RUT <span>*</span></label>
+                <label>
+                  RUT <span>*</span>
+                </label>
                 <IonInput
                   value={form.rut}
-                  onIonInput={(e) => cambiarValor('rut', String(e.detail.value))}
+                  onIonInput={(e) =>
+                    cambiarValor('rut', String(e.detail.value))
+                  }
                   placeholder="12.345.678-9"
                   className="registro-input"
                 />
               </div>
 
               <div className="registro-group full">
-                <label>Correo Electrónico <span>*</span></label>
+                <label>
+                  Correo Electrónico <span>*</span>
+                </label>
                 <IonInput
                   value={form.correo}
-                  onIonInput={(e) => cambiarValor('correo', String(e.detail.value))}
+                  onIonInput={(e) =>
+                    cambiarValor('correo', String(e.detail.value))
+                  }
                   type="email"
                   placeholder="usuario@ejemplo.cl"
                   className="registro-input"
@@ -120,38 +167,57 @@ const Registro: React.FC = () => {
               </div>
 
               <div className="registro-group">
-                <label>Región <span>*</span></label>
+                <label>
+                  Región <span>*</span>
+                </label>
                 <IonInput
                   value={form.region}
-                  onIonInput={(e) => cambiarValor('region', String(e.detail.value))}
+                  onIonInput={(e) =>
+                    cambiarValor('region', String(e.detail.value))
+                  }
                   className="registro-input"
                 />
               </div>
 
               <div className="registro-group">
-                <label>Comuna <span>*</span></label>
+                <label>
+                  Comuna <span>*</span>
+                </label>
                 <IonInput
                   value={form.comuna}
-                  onIonInput={(e) => cambiarValor('comuna', String(e.detail.value))}
+                  onIonInput={(e) =>
+                    cambiarValor('comuna', String(e.detail.value))
+                  }
                   className="registro-input"
                 />
               </div>
 
               <div className="registro-group">
-                <label>Contraseña <span>*</span></label>
+                <label>
+                  Contraseña <span>*</span>
+                </label>
                 <IonInput
                   value={form.password}
-                  onIonInput={(e) => cambiarValor('password', String(e.detail.value))}
+                  onIonInput={(e) =>
+                    cambiarValor('password', String(e.detail.value))
+                  }
                   type="password"
                   className="registro-input"
                 />
               </div>
 
               <div className="registro-group">
-                <label>Confirmar Contraseña <span>*</span></label>
+                <label>
+                  Confirmar Contraseña <span>*</span>
+                </label>
                 <IonInput
                   value={form.confirmarPassword}
-                  onIonInput={(e) => cambiarValor('confirmarPassword', String(e.detail.value))}
+                  onIonInput={(e) =>
+                    cambiarValor(
+                      'confirmarPassword',
+                      String(e.detail.value)
+                    )
+                  }
                   type="password"
                   className="registro-input"
                 />
@@ -162,17 +228,27 @@ const Registro: React.FC = () => {
             <div className="terms-box">
               <IonCheckbox
                 checked={aceptaTerminos}
-                onIonChange={(e) => setAceptaTerminos(e.detail.checked)}
+                onIonChange={(e) =>
+                  setAceptaTerminos(e.detail.checked)
+                }
               />
 
               <p>
-                Acepto los términos y condiciones de tratamiento de datos según
-                <strong> Ley 19.628 de Protección de Datos Personales </strong>
-                y autorizo el uso de mis datos para fines de seguridad informática municipal.
+                Acepto los términos y condiciones de tratamiento de
+                datos según
+                <strong>
+                  {' '}Ley 19.628 de Protección de Datos Personales{' '}
+                </strong>
+                y autorizo el uso de mis datos para fines de
+                seguridad informática municipal.
               </p>
             </div>
 
-            <IonButton expand="block" className="registro-btn" onClick={registrarUsuario}>
+            <IonButton
+              expand="block"
+              className="registro-btn"
+              onClick={registrarUsuario}
+            >
               <IonIcon icon={personAddOutline} slot="start" />
               Registrarse
             </IonButton>

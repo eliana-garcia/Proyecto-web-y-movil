@@ -12,6 +12,48 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+/* =========================
+   MIDDLEWARE JWT
+========================= */
+
+const verificarToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({
+      mensaje: "Token requerido"
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({
+      mensaje: "Token requerido"
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    req.usuario = decoded;
+
+    next();
+
+  } catch (error) {
+    return res.status(403).json({
+      mensaje: "Token inválido"
+    });
+  }
+};
+
+/* =========================
+   RUTAS DE PRUEBA
+========================= */
+
 app.get("/", (req, res) => {
   res.json({
     mensaje: "Servidor funcionando"
@@ -20,6 +62,7 @@ app.get("/", (req, res) => {
 
 app.get("/test-db", async (req, res) => {
   try {
+
     const resultado = await pool.query(
       "SELECT NOW()"
     );
@@ -27,6 +70,7 @@ app.get("/test-db", async (req, res) => {
     res.json(resultado.rows);
 
   } catch (error) {
+
     console.error(error);
 
     res.status(500).json({
@@ -35,9 +79,13 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+/* =========================
+   REGISTRO
+========================= */
+
 app.post("/api/registro", async (req, res) => {
   try {
+
     const {
       nombre_usuario,
       rut,
@@ -90,16 +138,21 @@ app.post("/api/registro", async (req, res) => {
       mensaje: "Usuario registrado correctamente"
     });
 
-    } catch (error) {
+  } catch (error) {
+
     console.error("ERROR REGISTRO:");
     console.error(error);
 
     res.status(500).json({
-        mensaje: "Error al registrar usuario",
-        error: error.message
+      mensaje: "Error al registrar usuario",
+      error: error.message
     });
-    }
+  }
 });
+
+/* =========================
+   LOGIN
+========================= */
 
 app.post("/api/login", async (req, res) => {
   try {
@@ -146,11 +199,12 @@ app.post("/api/login", async (req, res) => {
       }
     );
 
-    res.json({
-      token,
-      rol: usuario.rol_id,
-      nombre: usuario.nombre_usuario
-    });
+        res.json({
+          token,
+          id: usuario.id,
+          rol: usuario.rol_id,
+          nombre: usuario.nombre_usuario
+        });
 
   } catch (error) {
 
@@ -161,6 +215,148 @@ app.post("/api/login", async (req, res) => {
     });
   }
 });
+
+/* =========================
+   LISTAR USUARIOS
+========================= */
+
+app.get(
+  "/api/usuarios",
+  verificarToken,
+  async (req, res) => {
+    try {
+
+      const resultado = await pool.query(
+        `SELECT
+          id,
+          nombre_usuario,
+          rut,
+          correo,
+          region,
+          comuna,
+          rol_id
+        FROM usuarios
+        ORDER BY id`
+      );
+
+      res.json(resultado.rows);
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al obtener usuarios"
+      });
+    }
+  }
+);
+
+/* =========================
+   EJEMPLO RUTA PROTEGIDA
+========================= */
+
+app.get(
+  "/api/perfil",
+  verificarToken,
+  async (req, res) => {
+
+    res.json({
+      mensaje: "Acceso autorizado",
+      usuario: req.usuario
+    });
+  }
+);
+
+/* =========================
+   SERVIDOR
+========================= */
+
+const PORT = process.env.PORT || 3000;
+
+/* =========================
+   CREAR REPORTE
+========================= */
+
+app.post(
+  "/api/reportes",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const { descripcion } = req.body;
+
+      const usuario_id = req.usuario.id;
+
+      await pool.query(
+        `INSERT INTO reportes
+        (
+          usuario_id,
+          descripcion,
+          evidencia,
+          estado
+        )
+        VALUES ($1,$2,$3,$4)`,
+        [
+          usuario_id,
+          descripcion,
+          '',
+          'Pendiente'
+        ]
+      );
+
+      res.status(201).json({
+        mensaje: 'Reporte creado correctamente'
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: 'Error al crear reporte'
+      });
+    }
+  }
+);
+
+/* =========================
+   LISTAR REPORTES
+========================= */
+
+app.get(
+  "/api/reportes",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const resultado = await pool.query(
+        `SELECT
+          id,
+          usuario_id,
+          descripcion,
+          estado
+        FROM reportes
+        ORDER BY id DESC`
+      );
+
+      res.json(resultado.rows);
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al obtener reportes"
+      });
+    }
+  }
+);
+
 app.listen(PORT, () => {
-  console.log(`Servidor iniciado en puerto ${PORT}`);
+  console.log(
+    `Servidor iniciado en puerto ${PORT}`
+  );
 });
