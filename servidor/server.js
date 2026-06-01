@@ -19,8 +19,6 @@ app.use(express.json());
 const verificarToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  console.log("AUTH HEADER:", authHeader);
-
   if (!authHeader) {
     return res.status(401).json({
       mensaje: "Token requerido"
@@ -28,9 +26,6 @@ const verificarToken = (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
-
-  console.log("TOKEN:", token);
-  console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
   if (!token) {
     return res.status(401).json({
@@ -44,8 +39,6 @@ const verificarToken = (req, res, next) => {
       token,
       process.env.JWT_SECRET
     );
-
-    console.log("TOKEN DECODIFICADO:", decoded);
 
     req.usuario = decoded;
 
@@ -351,6 +344,7 @@ app.put(
 app.delete(
   "/api/usuarios/:id",
   verificarToken,
+  verificarAdmin,
   async (req, res) => {
 
     try {
@@ -414,7 +408,6 @@ const PORT = process.env.PORT || 3000;
 app.post(
   "/api/reportes",
   verificarToken,
-  verificarAdmin,
   async (req, res) => {
 
     try {
@@ -539,3 +532,134 @@ app.listen(PORT, () => {
     `Servidor iniciado en puerto ${PORT}`
   );
 });
+
+/* =========================
+   LISTAR EVALUACIONES
+========================= */
+
+app.get(
+  "/api/evaluaciones",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const resultado = await pool.query(
+        `SELECT *
+         FROM evaluaciones
+         ORDER BY id`
+      );
+
+      res.json(resultado.rows);
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al obtener evaluaciones"
+      });
+    }
+  }
+);
+
+/* =========================
+   LISTAR ALERTAS
+========================= */
+
+app.get(
+  "/api/alertas",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const resultado = await pool.query(
+        `SELECT *
+         FROM alertas
+         ORDER BY fecha_publicacion DESC`
+      );
+
+      res.json(resultado.rows);
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al obtener alertas"
+      });
+    }
+  }
+);
+
+/* =========================
+   LISTAR CURSOS
+========================= */
+
+app.get(
+  "/api/cursos",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const resultado = await pool.query(
+        `SELECT *
+         FROM cursos
+         ORDER BY id`
+      );
+
+      res.json(resultado.rows);
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al obtener cursos"
+      });
+    }
+  }
+);
+
+/* =========================
+   ELIMINAR REPORTE
+========================= */
+
+app.delete(
+  "/api/reportes/:id",
+  verificarToken,
+  async (req, res) => {
+
+    try {
+
+      const { id } = req.params;
+
+      const resultado = await pool.query(
+        `DELETE FROM reportes
+         WHERE id = $1
+         RETURNING id`,
+        [id]
+      );
+
+      if (resultado.rows.length === 0) {
+        return res.status(404).json({
+          mensaje: "Reporte no encontrado"
+        });
+      }
+
+      res.json({
+        mensaje: "Reporte eliminado correctamente"
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        mensaje: "Error al eliminar reporte"
+      });
+    }
+  }
+);

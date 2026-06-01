@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { registrarUsuario } from '../services/authService';
 
 import {
   IonPage,
@@ -40,7 +41,7 @@ const Registro: React.FC = () => {
     });
   };
 
-  const registrarUsuario = async () => {
+  const manejarRegistro = async () => {
     if (
       !form.usuario ||
       !form.rut ||
@@ -65,38 +66,33 @@ const Registro: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        'http://localhost:3000/api/registro',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            nombre_usuario: form.usuario,
-            rut: form.rut,
-            correo: form.correo,
-            region: form.region,
-            comuna: form.comuna,
-            password: form.password
-          })
-        }
-      );
 
-      const data = await response.json();
+  const {
+    response,
+    data
+  } = await registrarUsuario(
+    form.usuario,
+    form.rut,
+    form.correo,
+    form.region,
+    form.comuna,
+    form.password
+  );
 
-      if (!response.ok) {
-        alert(data.mensaje || 'Error al registrar usuario');
-        return;
-      }
+  if (!response.ok) {
+    alert(data.mensaje || 'Error al registrar usuario');
+    return;
+  }
 
-      alert('Usuario registrado correctamente.');
-      router.push('/Login', 'back');
+  alert('Usuario registrado correctamente.');
+  router.push('/Login', 'back');
 
-    } catch (error) {
-      console.error('Error:', error);
-      alert('No fue posible conectar con el servidor.');
-    }
+} catch (error) {
+
+  console.error('Error:', error);
+
+  alert('No fue posible conectar con el servidor.');
+} 
   };
 
   return (
@@ -247,7 +243,7 @@ const Registro: React.FC = () => {
             <IonButton
               expand="block"
               className="registro-btn"
-              onClick={registrarUsuario}
+              onClick={manejarRegistro}
             >
               <IonIcon icon={personAddOutline} slot="start" />
               Registrarse

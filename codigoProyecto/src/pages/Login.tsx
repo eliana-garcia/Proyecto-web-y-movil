@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { loginUsuario } from '../services/authService';
 
 import {
   IonPage,
@@ -29,27 +30,22 @@ const Login: React.FC = () => {
     return;
   }
 
-  try {
-    const response = await fetch(
-      'http://localhost:3000/api/login',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          rut,
-          password
-        })
-      }
-    );
+    try {
 
-    const data = await response.json();
-    console.log("RESPUESTA LOGIN:", data);
-    if (!response.ok) {
-      alert(data.mensaje);
-      return;
-    }
+      const {
+        response,
+        data
+      } = await loginUsuario(
+        rut,
+        password
+      );
+
+      console.log("RESPUESTA LOGIN:", data);
+
+      if (!response.ok) {
+        alert(data.mensaje);
+        return;
+      }
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('rol', String(data.rol));
@@ -61,10 +57,10 @@ const Login: React.FC = () => {
         router.push('/Capacitacion', 'root', 'replace');
       }
 
-  } catch (error) {
-    console.error(error);
-    alert('Error al conectar con el servidor');
-  }
+    } catch (error) {
+      console.error(error);
+      alert('Error al conectar con el servidor');
+    }
 };
 
   return (

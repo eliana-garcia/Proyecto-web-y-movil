@@ -77,6 +77,8 @@ CREATE TABLE reportes (
 
     estado VARCHAR(50) NOT NULL,
 
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     CONSTRAINT fk_usuario
     FOREIGN KEY (usuario_id)
     REFERENCES usuarios(id)
