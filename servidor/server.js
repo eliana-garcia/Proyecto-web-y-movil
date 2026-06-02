@@ -111,12 +111,46 @@ app.post("/api/registro", async (req, res) => {
       comuna,
       password
     } = req.body;
+    if (
+      !nombre_usuario ||
+      !rut ||
+      !correo ||
+      !region ||
+      !comuna ||
+      !password
+    ) {
+      return res.status(400).json({
+        mensaje: "Todos los campos son obligatorios"
+      });
+    }
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(correo)) {
+      return res.status(400).json({
+        mensaje: "Correo electrónico inválido"
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        mensaje:
+          "La contraseña debe tener al menos 8 caracteres"
+      });
+    }
+    const rutRegex =
+  /^[0-9]{7,8}-[0-9kK]$/;
+
+    if (!rutRegex.test(rut)) {
+      return res.status(400).json({
+        mensaje: "Formato de RUT inválido"
+      });
+    }
 
     const usuarioExiste = await pool.query(
       "SELECT * FROM usuarios WHERE rut = $1",
       [rut]
     );
-
     if (usuarioExiste.rows.length > 0) {
       return res.status(400).json({
         mensaje: "El usuario ya existe"
@@ -179,6 +213,23 @@ app.post("/api/login", async (req, res) => {
       password
     } = req.body;
 
+    // Validar campos obligatorios
+    if (!rut || !password) {
+      return res.status(400).json({
+        mensaje: "RUT y contraseña son obligatorios"
+      });
+    }
+
+    // Validar formato de RUT
+    const rutRegex =
+      /^[0-9]{7,8}-[0-9kK]$/;
+
+    if (!rutRegex.test(rut)) {
+      return res.status(400).json({
+        mensaje: "Formato de RUT inválido"
+      });
+    }
+
     const resultado = await pool.query(
       "SELECT * FROM usuarios WHERE rut = $1",
       [rut]
@@ -216,12 +267,12 @@ app.post("/api/login", async (req, res) => {
       }
     );
 
-        res.json({
-          token,
-          id: usuario.id,
-          rol: usuario.rol_id,
-          nombre: usuario.nombre_usuario
-        });
+    res.json({
+      token,
+      id: usuario.id,
+      rol: usuario.rol_id,
+      nombre: usuario.nombre_usuario
+    });
 
   } catch (error) {
 
@@ -413,6 +464,12 @@ app.post(
     try {
 
       const { descripcion } = req.body;
+
+      if (!descripcion || descripcion.trim() === "") {
+        return res.status(400).json({
+          mensaje: "La descripción es obligatoria"
+        });
+      }
 
       const usuario_id = req.usuario.id;
 
