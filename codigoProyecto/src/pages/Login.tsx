@@ -25,42 +25,60 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
 
  const iniciarSesion = async () => {
+
   if (!rut || !password) {
     alert('Debes ingresar RUT y contraseña.');
     return;
   }
 
-    try {
+  try {
 
-      const {
-        response,
-        data
-      } = await loginUsuario(
-        rut,
-        password
+    const data = await loginUsuario(
+      rut,
+      password
+    );
+
+    console.log("RESPUESTA LOGIN:", data);
+
+    localStorage.setItem(
+      'token',
+      data.token
+    );
+
+    localStorage.setItem(
+      'rol',
+      String(data.rol)
+    );
+
+    localStorage.setItem(
+      'usuarioId',
+      String(data.id)
+    );
+
+    if (data.rol === 1) {
+      router.push(
+        '/DashBoardAdmin',
+        'root',
+        'replace'
       );
-
-      console.log("RESPUESTA LOGIN:", data);
-
-      if (!response.ok) {
-        alert(data.mensaje);
-        return;
-      }
-
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('rol', String(data.rol));
-      localStorage.setItem('usuarioId', String(data.id));
-
-      if (data.rol === 1) {
-        router.push('/DashBoardAdmin', 'root', 'replace');
-      } else {
-        router.push('/Capacitacion', 'root', 'replace');
-      }
-
-    } catch (error) {
-      console.error(error);
-      alert('Error al conectar con el servidor');
+    } else {
+      router.push(
+        '/Capacitacion',
+        'root',
+        'replace'
+      );
     }
+
+  } catch (error: any) {
+
+    console.error(error);
+
+    alert(
+      error.message ||
+      'Error al conectar con el servidor'
+    );
+  }
+
 };
 
   return (

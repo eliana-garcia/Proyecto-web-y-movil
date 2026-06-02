@@ -1,28 +1,20 @@
+import { apiFetch } from "./api";
+
 export const loginUsuario = async (
   rut: string,
   password: string
 ) => {
 
-  const response = await fetch(
-    'http://localhost:3000/api/login',
+  return await apiFetch(
+    "/api/login",
     {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method: "POST",
       body: JSON.stringify({
         rut,
         password
       })
     }
   );
-
-  const data = await response.json();
-
-  return {
-    response,
-    data
-  };
 };
 
 export const registrarUsuario = async (
@@ -34,13 +26,10 @@ export const registrarUsuario = async (
   password: string
 ) => {
 
-  const response = await fetch(
-    'http://localhost:3000/api/registro',
+  return await apiFetch(
+    "/api/registro",
     {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method: "POST",
       body: JSON.stringify({
         nombre_usuario: usuario,
         rut,
@@ -51,11 +40,4 @@ export const registrarUsuario = async (
       })
     }
   );
-
-  const data = await response.json();
-
-  return {
-    response,
-    data
-  };
 };
