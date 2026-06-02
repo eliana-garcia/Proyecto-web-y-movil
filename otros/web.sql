@@ -1,7 +1,3 @@
-
-
-
-
 -- =========================================
 -- TABLA ROLES
 -- =========================================
@@ -165,3 +161,59 @@ FROM usuarios;
 UPDATE usuarios
 SET rol_id = 1
 WHERE id = 7;
+
+ALTER TABLE reportes
+ADD COLUMN fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+SELECT * FROM reportes;
+
+SELECT * FROM cursos;
+SELECT * FROM evaluaciones;
+SELECT * FROM alertas;
+
+INSERT INTO cursos (titulo, descripcion)
+VALUES
+(
+'Phishing y Correos Fraudulentos',
+'Identificar correos maliciosos y técnicas de phishing'
+),
+(
+'Seguridad de Contraseñas',
+'Buenas prácticas para crear y administrar contraseñas seguras'
+),
+(
+'Protección de Datos Personales',
+'Medidas para proteger información sensible'
+);
+
+INSERT INTO evaluaciones (curso_id, puntaje)
+VALUES
+(1, 85),
+(2, 90),
+(3, 78);
+
+INSERT INTO alertas
+(
+titulo,
+contenido,
+fecha_publicacion
+)
+VALUES
+(
+'Alerta de Phishing',
+'Se detectó una campaña de correos fraudulentos.',
+CURRENT_TIMESTAMP
+),
+(
+'Actualización de Seguridad',
+'Actualizar sistemas antes del viernes.',
+CURRENT_TIMESTAMP
+),
+(
+'Riesgo de Contraseñas Débiles',
+'Se recomienda cambiar contraseñas antiguas.',
+CURRENT_TIMESTAMP
+);
+
+SELECT id, nombre_usuario, rut, rol_id
+FROM usuarios;
