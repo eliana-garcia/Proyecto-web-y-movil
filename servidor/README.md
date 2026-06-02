@@ -1,12 +1,10 @@
 # Servidor Backend - Node.js + Express
 
-Servidor backend desarrollado con Node.js y Express.
+Servidor backend desarrollado con Node.js y Express para la Plataforma de Ciberseguridad Municipal.
 
----
+## Instalación
 
-# Instalación
-
-Entrar a la carpeta del servidor:
+Ingresar a la carpeta del servidor:
 
 ```bash
 cd servidor
@@ -18,9 +16,9 @@ Instalar dependencias:
 npm install
 ```
 
----
+## Ejecución
 
-# Ejecutar el servidor
+Iniciar el servidor:
 
 ```bash
 node server.js
@@ -32,9 +30,7 @@ Si el servidor inicia correctamente aparecerá:
 Servidor iniciado en http://localhost:3000
 ```
 
----
-
-# Probar funcionamiento
+## Verificación
 
 Abrir en el navegador:
 
@@ -48,12 +44,8 @@ Respuesta esperada:
 Servidor funcionando
 ```
 
----
+## Tecnologías Utilizadas
 
-# Tecnologías utilizadas
-
-* Node.js
-* Express
-
----
-
+- Node.js
+- Express
+- PostgreSQL
