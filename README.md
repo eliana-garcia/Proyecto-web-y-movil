@@ -1,7 +1,15 @@
-# Plataforma de Ciberseguridad Municipal
+## Plataforma de Ciberseguridad Municipal
 
-## Descripción
-Plataforma web y móvil desarrollada para municipios de Chile, enfocada en fortalecer la ciberseguridad institucional y proteger datos personales. Proyecto alineado con la **Ley 21.663 (Marco de Ciberseguridad)** y la **Ley 21.180 (Transformación Digital)**.
+### Descripción del Proyecto
+
+La Plataforma de Ciberseguridad Municipal es una aplicación web y móvil desarrollada para apoyar a los municipios de Chile en la gestión de incidentes de ciberseguridad, protección de datos personales y fortalecimiento de las capacidades institucionales en materia de seguridad digital.
+
+El proyecto se encuentra alineado con:
+
+-  Ley 21.663: Marco de Ciberseguridad
+-  Ley 21.180: Transformación Digital del Estado
+
+La solución contempla distintos niveles de acceso según el rol de cada usuario, permitiendo una administración segura y eficiente de la información.
 
 ## Integrantes
 * Kevin Alvarez
