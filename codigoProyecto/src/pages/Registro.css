@@ -1,0 +1,165 @@
+.registro-content {
+  --background: #073ea3;
+}
+
+.registro-wrapper {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.registro-card {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  background: white;
+  border-radius: 14px;
+  padding: 62px 28px 14px;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.28);
+  text-align: center;
+}
+
+.registro-back {
+  position: absolute;
+  right: 28px;
+  top: 25px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.registro-icon {
+  width: 58px;
+  height: 58px;
+  background: #2563ff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 18px;
+  font-size: 30px;
+}
+
+.registro-card h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.registro-subtitle {
+  color: #8b95a5;
+  margin: 10px 0 24px;
+}
+
+.registro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  text-align: left;
+}
+
+.registro-group.full {
+  grid-column: span 2;
+}
+
+.registro-group label {
+  display: block;
+  color: #5b6678;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.registro-group label span {
+  color: #ef4444;
+}
+
+.registro-input {
+  --background: white;
+  --color: #111827;
+  --placeholder-color: #9ca3af;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  border: 1px solid #d7dce5;
+  border-radius: 8px;
+  height: 48px;
+}
+
+.terms-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.terms-box p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.terms-box strong {
+  color: #2563ff;
+}
+
+.registro-btn {
+  --background: #2563ff;
+  --border-radius: 8px;
+  height: 48px;
+  font-weight: 700;
+  margin-top: 22px;
+}
+
+.login-link {
+  color: #697386;
+  font-size: 14px;
+  margin: 12px 0 0;
+}
+
+.login-link span {
+  color: #2563ff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .registro-wrapper {
+    padding: 16px;
+    align-items: flex-start;
+  }
+
+  .registro-card {
+    padding: 62px 20px 18px;
+  }
+
+  .registro-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .registro-group.full {
+    grid-column: span 1;
+  }
+
+  .registro-card h1 {
+    font-size: 22px;
+  }
+
+  .terms-box {
+    gap: 10px;
+  }
+}

@@ -1,0 +1,150 @@
+.clave-content {
+  --background: #073ea3;
+}
+
+.clave-wrapper {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.clave-card {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: white;
+  border-radius: 14px;
+  padding: 70px 30px 32px;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.28);
+  text-align: center;
+}
+
+.back-button {
+  position: absolute;
+  right: 25px;
+  top: 24px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clave-icon {
+  width: 58px;
+  height: 58px;
+  background: #2563ff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 18px;
+  font-size: 30px;
+}
+
+.clave-card h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.clave-subtitle {
+  color: #8b95a5;
+  margin: 10px 0 30px;
+}
+
+.clave-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.clave-group label {
+  display: block;
+  color: #5b6678;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.clave-input {
+  --background: white;
+  --color: #111827;
+  --placeholder-color: #9ca3af;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  border: 1px solid #d7dce5;
+  border-radius: 8px;
+  height: 48px;
+}
+
+.password-box {
+  position: relative;
+}
+
+.password-box ion-icon {
+  position: absolute;
+  right: 14px;
+  top: 15px;
+  z-index: 5;
+  color: #64748b;
+  font-size: 20px;
+}
+
+.password-input {
+  --padding-end: 45px;
+}
+
+.clave-links {
+  text-align: left;
+  color: #2563ff;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 6px 0 22px;
+}
+
+.clave-links p {
+  margin: 8px 0;
+}
+
+.clave-btn {
+  --background: #2563ff;
+  --border-radius: 8px;
+  height: 48px;
+  font-weight: 700;
+}
+
+.help-text {
+  color: #2563ff;
+  font-weight: 600;
+  margin: 28px 0;
+  font-size: 14px;
+}
+
+.clave-footer {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 22px;
+  color: #a0a8b5;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .clave-wrapper {
+    padding: 18px;
+  }
+
+  .clave-card {
+    padding: 65px 22px 28px;
+  }
+
+  .clave-card h1 {
+    font-size: 21px;
+  }
+}

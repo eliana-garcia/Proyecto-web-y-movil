@@ -1,0 +1,159 @@
+.title-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 24px;
+}
+
+.title-card h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #9a3412;
+}
+
+.title-card p {
+  margin: 0;
+  color: #c2410c;
+  font-size: 15px;
+}
+
+.round-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.incident-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.incident-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.incident-form-group.full-width {
+  grid-column: span 2;
+}
+
+.incident-form-group label {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.incident-input {
+  --background: #f8fafc;
+  --padding-start: 16px !important;
+  --padding-end: 16px !important;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+  height: 48px;
+  transition: all 0.2s ease;
+  width: 100%;
+  --highlight-height: 0 !important;
+  --inner-border-width: 0 !important;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+ion-select.incident-input {
+  height: 48px;
+}
+
+ion-input.incident-input {
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+}
+
+.incident-input:focus-within {
+  border-color: #2563ff;
+  box-shadow: 0 0 0 3px rgba(37,99,255,0.1);
+}
+
+.incident-textarea {
+  --background: #f8fafc;
+  --padding-start: 16px;
+  --padding-top: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 120px;
+  transition: all 0.2s ease;
+}
+
+.incident-textarea:focus-within {
+  border-color: #2563ff;
+  box-shadow: 0 0 0 3px rgba(37,99,255,0.1);
+}
+
+.upload-zone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.upload-zone:hover {
+  border-color: #2563ff;
+  background: #f0f4ff;
+}
+
+.upload-zone ion-icon {
+  font-size: 42px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.upload-zone p {
+  margin: 0 0 8px;
+  color: #1e293b;
+  font-size: 16px;
+}
+
+.upload-zone p strong {
+  color: #2563ff;
+}
+
+.upload-zone span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.submit-incident-btn {
+  --background: #2563ff;
+  --border-radius: 10px;
+  --box-shadow: 0 4px 6px -1px rgba(37, 99, 255, 0.2);
+  height: 52px;
+  font-weight: 700;
+  font-size: 16px;
+  margin-top: 32px;
+}
+
+@media (max-width: 768px) {
+  .incident-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .incident-form-group.full-width {
+    grid-column: span 1;
+  }
+}
