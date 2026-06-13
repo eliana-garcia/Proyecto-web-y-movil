@@ -62,16 +62,16 @@ Proyecto-web-y-movil-main/
 
 ## Funcionalidades Recientes
 
-### 🔒 Control de Acceso Basado en Roles (RBAC)
+### Control de Acceso Basado en Roles (RBAC)
 Se ha implementado un sistema de roles para asegurar que cada funcionario acceda solo a las herramientas que le corresponden:
 * **Administradores:** Acceso total a la plataforma, incluyendo la **Gestión de Usuarios** y **Gestión de Reportes**.
 * **Funcionarios:** Acceso a herramientas de capacitación, evaluación y reporte, con restricción automática a las funciones administrativas.
 
-### 🛡️ Seguridad y Rutas Protegidas
+### Seguridad y Rutas Protegidas
 * **Navegación Dinámica:** El menú lateral se adapta automáticamente según el rol del usuario, ocultando opciones no autorizadas.
 * **Middleware de Frontend:** Las rutas críticas están protegidas a nivel de código; si un usuario intenta acceder manualmente a una URL de administración, el sistema lo redirige al panel de capacitación.
 
-### 🎨 Mejoras en la Experiencia de Usuario (UX)
+### Mejoras en la Experiencia de Usuario (UX)
 * **Dashboard Personalizado:** Saludo dinámico que reconoce el nombre y rol del usuario logueado.
 * **Formulario de Reportes Optimizado:** Mejora visual en el formulario de incidentes con alineación precisa de campos y diseño responsivo adaptado a la web municipal.
 
