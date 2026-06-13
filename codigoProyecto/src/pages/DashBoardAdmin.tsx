@@ -16,55 +16,6 @@ const DashBoardAdmin: React.FC = () => {
   const [reportes, setReportes] = useState(0);
   const [reportesActivos, setReportesActivos] = useState(0);
   const [indicadores, setIndicadores] = useState<any>(null);
-
-  // Obtener datos del usuario
-  const userStr = localStorage.getItem('usuario');
-  const user = userStr ? JSON.parse(userStr) : null;
-  const isAdmin = localStorage.getItem('rol') === '1';
-
-  useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        // Usuarios
-        const resU = await fetch(`${API_URL}/api/usuarios`, { 
-          headers: { Authorization: `Bearer ${token}` } 
-        });
-        if (resU.ok) {
-          const dataU = await resU.json();
-          const listaU = dataU.datos || (Array.isArray(dataU) ? dataU : []);
-          setUsuarios(listaU.length);
-        }
-
-        // Reportes
-        const resR = await fetch(`${API_URL}/api/reportes`, { 
-          headers: { Authorization: `Bearer ${token}` } 
-        });
-        if (resR.ok) {
-          const dataR = await resR.json();
-          const listaR = dataR.datos || (Array.isArray(dataR) ? dataR : []);
-          setReportes(listaR.length);
-          setReportesActivos(listaR.filter((r: any) => r.estado?.toLowerCase() !== 'resuelto').length);
-        }
-
-        // Indicadores (EF 5)
-        const resI = await fetch(`${API_URL}/api/indicadores`, { 
-          headers: { Authorization: `Bearer ${token}` } 
-        });
-        if (resI.ok) {
-          const dataI = await resI.json();
-          setIndicadores(dataI);
-        }
-
-      } catch (error) {
-        console.error('Error al cargar datos:', error);
-      }
-    };
-    cargarDatos();
-  }, []);
-
   return (
     <IonPage>
       <AdminLayout>
