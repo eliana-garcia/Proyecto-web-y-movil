@@ -53,13 +53,13 @@ app.use(express.json());
 
 // Rate Limiting para prevenir fuerza bruta (EF 3)
 const limiteGeneral = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // Máximo 100 peticiones por IP
+  windowMs: 15 * 60 * 1000,
+  max: 100, 
   message: { mensaje: "Demasiadas peticiones desde esta IP, por favor intente más tarde." }
 });
 
 const limiteLoginRegistro = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hora
+  windowMs: 60 * 60 * 1000, 
   max: 100, 
   message: { mensaje: "Demasiados intentos de acceso, por favor intente en una hora." }
 });
