@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IonPage, IonIcon } from '@ionic/react';
-import { API_URL } from '../services/api';
+import { API_URL, apiFetch } from '../services/api';
 import {
   warningOutline,
   shieldCheckmarkOutline,
@@ -16,6 +16,48 @@ const DashBoardAdmin: React.FC = () => {
   const [reportes, setReportes] = useState(0);
   const [reportesActivos, setReportesActivos] = useState(0);
   const [indicadores, setIndicadores] = useState<any>(null);
+
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('usuario');
+    const role = localStorage.getItem('rol');
+    let isUserAdmin = false;
+
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+    if (role === '1') {
+      isUserAdmin = true;
+      setIsAdmin(true);
+    }
+
+    const cargarDatos = async () => {
+      try {
+        // 1. Cargar reportes
+        const dataReportes = await apiFetch("/api/reportes");
+        const listReportes = Array.isArray(dataReportes) ? dataReportes : [];
+        setReportes(listReportes.length);
+        const activos = listReportes.filter((r: any) => r.estado !== 'Resuelto').length;
+        setReportesActivos(activos);
+
+        // 2. Cargar usuarios (solo administradores)
+        if (isUserAdmin) {
+          const dataUsuarios = await apiFetch("/api/usuarios");
+          setUsuarios(Array.isArray(dataUsuarios) ? dataUsuarios.length : 0);
+        }
+
+        // 3. Cargar indicadores económicos (EF 5)
+        const dataIndicadores = await apiFetch("/api/indicadores");
+        setIndicadores(dataIndicadores);
+      } catch (err) {
+        console.error("Error al cargar datos del dashboard:", err);
+      }
+    };
+
+    cargarDatos();
+  }, []);
   return (
     <IonPage>
       <AdminLayout>

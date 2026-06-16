@@ -18,14 +18,6 @@ Este directorio contiene la documentación técnica y archivos de respaldo utili
 - Relaciones entre entidades.
 - Evidencias obtenidas desde PostgreSQL.
 
-### web.sql
-
-- Creación de tablas.
-- Relaciones.
-- Restricciones de integridad.
-- Datos de prueba.
-- Consultas SQL.
-
 ### 2.7 - Pruebas funcionales 
 
 Contiene evidencias de implementación y funcionamiento del proyecto:
@@ -34,3 +26,15 @@ Contiene evidencias de implementación y funcionamiento del proyecto:
 - Pruebas realizadas.
 - Evidencias de ejecución.
 - Validaciones de funcionalidades.
+
+### README_EF5.md
+
+- Documentación sobre la integración con la API externa de indicadores económicos.
+
+### REPORTE_TECNICO_EF3_EF4.md
+
+- Reporte sobre medidas de seguridad avanzadas (SQL injection, XSS, CORS, rate limits) y optimizaciones (compresión y paginación en endpoints).
+
+### DOCUMENTACION_MEJORADA.md
+
+- Documentación detallada de criterios de aceptación de requerimientos, profundización legal de leyes chilenas (21.663, 21.180, 19.628), arquetipos de usuario, flujos de navegación/arquitectura mediante diagramas Mermaid, y flujos de tareas (task flows) con control de errores.

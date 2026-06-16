@@ -203,13 +203,16 @@ app.post("/api/login", limiteLoginRegistro, async (req, res) => {
       return res.status(400).json({ mensaje: "Formato de RUT inválido" });
     }
 
-    const resultado = await pool.query("SELECT * FROM usuarios WHERE rut = $1", [rutLimpio]);
+    const resultado = await pool.query(
+      "SELECT id, nombre_usuario, rut, correo, region, comuna, contraseña AS password, rol_id FROM usuarios WHERE rut = $1", 
+      [rutLimpio]
+    );
     if (resultado.rows.length === 0) {
       return res.status(401).json({ mensaje: "Usuario no encontrado" });
     }
 
     const usuario = resultado.rows[0];
-    const passwordValida = await bcrypt.compare(password, usuario.contraseña);
+    const passwordValida = await bcrypt.compare(password, usuario.password);
 
     if (!passwordValida) {
       return res.status(401).json({ mensaje: "Contraseña incorrecta" });
@@ -236,8 +239,11 @@ app.post("/api/login", limiteLoginRegistro, async (req, res) => {
 /* --- GESTIÓN DE USUARIOS (ADMIN) --- */
 app.get("/api/usuarios", verificarToken, verificarAdmin, async (req, res) => {
   try {
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
     const resultado = await pool.query(
-      `SELECT id, nombre_usuario, rut, correo, region, comuna, rol_id FROM usuarios ORDER BY id`
+      `SELECT id, nombre_usuario, rut, correo, region, comuna, rol_id FROM usuarios ORDER BY id LIMIT $1 OFFSET $2`,
+      [limit, offset]
     );
     res.json(resultado.rows);
   } catch (error) {
@@ -326,10 +332,26 @@ app.post("/api/reportes", verificarToken, async (req, res) => {
 
 app.get("/api/reportes", verificarToken, async (req, res) => {
   try {
-    const resultado = await pool.query(
-      `SELECT id, usuario_id, descripcion, estado, fecha_creacion as fecha, 'Seguridad' as tipo 
-       FROM reportes ORDER BY id DESC`
-    );
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+
+    let query = `SELECT id, usuario_id, descripcion, estado, fecha_creacion as fecha, 'Seguridad' as tipo 
+                 FROM reportes`;
+    let params = [];
+
+    // Restringir a funcionarios para que solo vean sus propios reportes
+    if (req.usuario.rol !== 1) {
+      query += ` WHERE usuario_id = $1`;
+      params.push(req.usuario.id);
+    }
+
+    query += ` ORDER BY id DESC`;
+
+    // Agregar paginación
+    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(limit, offset);
+
+    const resultado = await pool.query(query, params);
     res.json(resultado.rows);
   } catch (error) {
     console.error(error);
@@ -344,14 +366,21 @@ app.get("/api/reportes/:id", verificarToken, async (req, res) => {
     if (resultado.rows.length === 0) {
       return res.status(404).json({ mensaje: "Reporte no encontrado" });
     }
-    res.json(resultado.rows[0]);
+    const reporte = resultado.rows[0];
+
+    // Impedir que un usuario vea reportes de otros usuarios (IDOR)
+    if (req.usuario.rol !== 1 && reporte.usuario_id !== req.usuario.id) {
+      return res.status(403).json({ mensaje: "Acceso no autorizado a este reporte" });
+    }
+
+    res.json(reporte);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al obtener reporte" });
   }
 });
 
-app.put("/api/reportes/:id", verificarToken, async (req, res) => {
+app.put("/api/reportes/:id", verificarToken, verificarAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
@@ -370,7 +399,7 @@ app.put("/api/reportes/:id", verificarToken, async (req, res) => {
   }
 });
 
-app.delete("/api/reportes/:id", verificarToken, async (req, res) => {
+app.delete("/api/reportes/:id", verificarToken, verificarAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const resultado = await pool.query(`DELETE FROM reportes WHERE id = $1 RETURNING id`, [id]);
@@ -387,7 +416,12 @@ app.delete("/api/reportes/:id", verificarToken, async (req, res) => {
 /* --- EVALUACIONES, ALERTAS Y CURSOS --- */
 app.get("/api/evaluaciones", verificarToken, async (req, res) => {
   try {
-    const resultado = await pool.query(`SELECT * FROM evaluaciones ORDER BY id`);
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const resultado = await pool.query(
+      `SELECT * FROM evaluaciones ORDER BY id LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    );
     res.json(resultado.rows);
   } catch (error) {
     console.error(error);
@@ -397,7 +431,12 @@ app.get("/api/evaluaciones", verificarToken, async (req, res) => {
 
 app.get("/api/alertas", verificarToken, async (req, res) => {
   try {
-    const resultado = await pool.query(`SELECT * FROM alertas ORDER BY fecha_publicacion DESC`);
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const resultado = await pool.query(
+      `SELECT * FROM alertas ORDER BY fecha_publicacion DESC LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    );
     res.json(resultado.rows);
   } catch (error) {
     console.error(error);
@@ -407,11 +446,36 @@ app.get("/api/alertas", verificarToken, async (req, res) => {
 
 app.get("/api/cursos", verificarToken, async (req, res) => {
   try {
-    const resultado = await pool.query(`SELECT * FROM cursos ORDER BY id`);
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const resultado = await pool.query(
+      `SELECT * FROM cursos ORDER BY id LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    );
     res.json(resultado.rows);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al obtener cursos" });
+  }
+});
+
+/* --- INDICADORES ECONÓMICOS EXTERNOS (EF 5) --- */
+app.get("/api/indicadores", verificarToken, async (req, res) => {
+  try {
+    const response = await fetch("https://mindicador.cl/api");
+    if (!response.ok) {
+      throw new Error(`Error de mindicador.cl: ${response.status}`);
+    }
+    const data = await response.json();
+    res.json({
+      uf: data.uf,
+      dolar: data.dolar,
+      euro: data.euro,
+      utm: data.utm
+    });
+  } catch (error) {
+    console.error("ERROR INDICADORES:", error.message);
+    res.status(500).json({ mensaje: "Error al obtener indicadores económicos externos" });
   }
 });
 
