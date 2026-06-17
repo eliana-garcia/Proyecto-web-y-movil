@@ -126,7 +126,7 @@ const DashBoardAdmin: React.FC = () => {
 
         {/* Sección de Indicadores Económicos (EF 5) */}
         <section className="panel" style={{ marginTop: '20px' }}>
-          <h2>Indicadores Económicos (API Externa)</h2>
+          <h2>Indicadores Económicos</h2>
           <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
             <div className="stat-card" style={{ padding: '15px', textAlign: 'center' }}>
               <p style={{ margin: 0, fontSize: '0.9rem' }}>UF</p>
