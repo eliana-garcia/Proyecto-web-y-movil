@@ -290,8 +290,8 @@ const GestionUsuarios: React.FC = () => {
                           />
                           <IonIcon
                             className="delete-icon"
-                            style={{color: u.activo ? '#f59e0b' : '#10b981', fontSize: '20px', cursor: 'pointer', marginRight: '10px'}}
-                            icon={u.activo ? lockClosedOutline : lockOpenOutline}
+                            style={{color: u.activo ? '#10b981' : '#f59e0b', fontSize: '20px', cursor: 'pointer', marginRight: '10px'}}
+                            icon={u.activo ? lockOpenOutline : lockClosedOutline}
                             onClick={() => toggleBloqueo(u.id, u.activo)}
                           />
                           <IonIcon

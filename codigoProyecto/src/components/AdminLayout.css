@@ -1178,7 +1178,45 @@ td {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     width: 280px;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -ms-overflow-style: none;  /* Ocultar en IE y Edge */
+    scrollbar-width: none;  /* Ocultar en Firefox */
   }
+
+  .sidebar::-webkit-scrollbar {
+    display: none; /* Ocultar en Chrome, Safari y Opera */
+  }
+
+
+  /* Ajustar tamaño del menú en pantallas móviles de baja altura para que quepa sin scroll */
+  @media (max-height: 740px) {
+    .sidebar-title {
+      padding: 16px 20px;
+    }
+    .sidebar-title h2 {
+      font-size: 18px;
+    }
+    .sidebar-title p {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+    .sidebar-nav {
+      padding: 10px;
+    }
+    .sidebar-link {
+      min-height: 38px;
+      margin-bottom: 4px;
+      font-size: 13px;
+      gap: 10px;
+      padding: 0 12px;
+    }
+    .sidebar-link ion-icon {
+      font-size: 18px;
+    }
+  }
+
 
   .sidebar.sidebar-open {
     transform: translateX(0);
